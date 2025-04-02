@@ -40,6 +40,6 @@ public class Coupon extends Timestamped {
     @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Column(nullable = false)
     private LocalDateTime deletedAt;
+
 }

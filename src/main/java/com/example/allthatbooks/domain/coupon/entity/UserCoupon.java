@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "coupons")
+@Table(name = "user_coupon")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserCoupon extends Timestamped {
     @Id

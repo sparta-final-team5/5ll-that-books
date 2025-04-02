@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "book_detail")
 public class BookDetail extends Timestamped{
+
     @Id
     @Column(name = "book_detail_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,5 @@ public class BookDetail extends Timestamped{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
+
 }
