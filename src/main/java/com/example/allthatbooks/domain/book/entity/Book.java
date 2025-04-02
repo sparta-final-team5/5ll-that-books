@@ -1,6 +1,7 @@
 package com.example.allthatbooks.domain.book.entity;
 
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
+import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
 import com.example.allthatbooks.domain.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -53,6 +54,20 @@ public class Book extends Timestamped {
             .info(request.getInfo())
             .thumbnailUrl(request.getThumbnailUrl())
             .build();
+    }
+
+    public void updateBook(UpdateBookRequest request) {
+        this.title = request.getTitle();
+        this.author = request.getAuthor();
+        this.translator = request.getTranslator();
+        this.quantity = request.getQuantity();
+        this.price = request.getPrice();
+        this.info = request.getInfo();
+        this.thumbnailUrl = request.getThumbnailUrl();
+    }
+
+    public void deleteBook() {
+        this.deletedAt = LocalDateTime.now();
     }
 
     @Builder
