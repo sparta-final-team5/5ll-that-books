@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "review")
+@Table(name = "reviews")
 public class Review extends Timestamped {
     @Id
     @Column(name = "review_id")
