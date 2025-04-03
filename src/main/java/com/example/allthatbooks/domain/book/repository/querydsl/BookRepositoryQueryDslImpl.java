@@ -27,10 +27,18 @@ public class BookRepositoryQueryDslImpl implements BookRepositoryQueryDsl {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<BookListResponse> findAllPaging(Pageable pageable) {
+    public Page<BookListResponse> findAllPaging(Pageable pageable, String search) {
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(book.deletedAt.isNull());
+
+        if (search != null && !search.isBlank()) {
+            builder.and(
+                book.title.containsIgnoreCase(search)
+                    .or(book.author.containsIgnoreCase(search))
+                    .or(book.translator.containsIgnoreCase(search))
+            );
+        }
 
         List<Tuple> tuples = queryFactory
             .select(book, bookTag)

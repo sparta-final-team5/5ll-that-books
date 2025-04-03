@@ -30,9 +30,10 @@ public class BookController {
     @GetMapping
     public ResponseEntity<PageResponse<BookListResponse>> findAll(
         @RequestParam(name = "page", defaultValue = "1") int page,
-        @RequestParam(name = "size", defaultValue = "10") int size
+        @RequestParam(name = "size", defaultValue = "10") int size,
+        @RequestParam(name = "search", required = false) String search
     ) {
-        PageResponse<BookListResponse> responses = bookService.findAll(page, size);
+        PageResponse<BookListResponse> responses = bookService.findAll(page, size, search);
         return ResponseEntity.ok(responses);
     }
 

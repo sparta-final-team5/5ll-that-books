@@ -6,6 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface BookRepositoryQueryDsl {
 
-    Page<BookListResponse> findAllPaging(Pageable pageable);
+    Page<BookListResponse> findAllPaging(Pageable pageable, String search);
 
 }
