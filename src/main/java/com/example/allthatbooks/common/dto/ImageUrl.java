@@ -1,4 +1,4 @@
-package com.example.allthatbooks.domain.common.dto;
+package com.example.allthatbooks.common.dto;
 
 import lombok.Builder;
 import lombok.Getter;

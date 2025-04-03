@@ -1,4 +1,4 @@
-package com.example.allthatbooks.domain.common.enums;
+package com.example.allthatbooks.common.enums;
 
 import lombok.Getter;
 

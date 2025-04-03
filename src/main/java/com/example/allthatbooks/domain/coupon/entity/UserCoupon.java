@@ -1,13 +1,12 @@
 package com.example.allthatbooks.domain.coupon.entity;
 
-import com.example.allthatbooks.domain.common.entity.Timestamped;
+import com.example.allthatbooks.common.entity.Timestamped;
 import com.example.allthatbooks.domain.coupon.enums.CouponStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

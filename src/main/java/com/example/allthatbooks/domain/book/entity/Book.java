@@ -2,8 +2,9 @@ package com.example.allthatbooks.domain.book.entity;
 
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
-import com.example.allthatbooks.domain.common.entity.Timestamped;
-import com.example.allthatbooks.domain.common.enums.Tag;
+import com.example.allthatbooks.common.dto.ImageUrl;
+import com.example.allthatbooks.common.entity.Timestamped;
+import com.example.allthatbooks.common.enums.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +13,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -46,11 +49,11 @@ public class Book extends Timestamped {
     @Column(nullable = false)
     private String thumbnailUrl;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
-    private List<BookTag> bookTagList = new ArrayList<>();
+    private Set<BookTag> bookTagSet = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     private List<BookDetail> bookDetailList = new ArrayList<>();
 
@@ -69,7 +72,7 @@ public class Book extends Timestamped {
     }
 
     public void addTag(BookTag bookTag) {
-        this.bookTagList.add(bookTag);
+        this.bookTagSet.add(bookTag);
     }
 
     public void addDetail(BookDetail bookDetail) {
@@ -84,6 +87,18 @@ public class Book extends Timestamped {
         this.price = request.getPrice();
         this.info = request.getInfo();
         this.thumbnailUrl = request.getThumbnailUrl();
+
+        Set<BookTag> newTagSet = new HashSet<>();
+        for (Tag tag : request.getTags()) {
+            newTagSet.add(BookTag.createBookTag(tag));
+        }
+        this.bookTagSet = new HashSet<>(newTagSet);
+
+        List<BookDetail> newDetailList = new ArrayList<>();
+        for (ImageUrl image : request.getImages()) {
+            newDetailList.add(BookDetail.createBookDetail(image.getImageUrl()));
+        }
+        this.bookDetailList = new ArrayList<>(newDetailList);
     }
 
     public void deleteBook() {

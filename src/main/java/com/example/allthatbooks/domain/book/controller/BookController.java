@@ -1,13 +1,18 @@
 package com.example.allthatbooks.domain.book.controller;
 
+import com.example.allthatbooks.common.dto.response.PageResponse;
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
+import com.example.allthatbooks.domain.book.dto.response.BookListResponse;
 import com.example.allthatbooks.domain.book.dto.response.BookSingleResponse;
 import com.example.allthatbooks.domain.book.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/books")
@@ -20,6 +25,20 @@ public class BookController {
     public ResponseEntity<BookSingleResponse> createBook(@Valid @RequestBody CreateBookRequest request) {
         BookSingleResponse response = bookService.createBook(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<BookListResponse>> findAll(
+        @RequestParam(name = "page", defaultValue = "1") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        PageResponse<BookListResponse> responses = bookService.findAll(page, size);
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/{bookId}")
+    public ResponseEntity<BookSingleResponse> findOne(@PathVariable("bookId") Long bookId) {
+        return ResponseEntity.ok(bookService.findOne(bookId));
     }
 
     @PutMapping("/{bookId}")

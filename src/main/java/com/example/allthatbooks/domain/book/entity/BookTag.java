@@ -1,6 +1,6 @@
 package com.example.allthatbooks.domain.book.entity;
 
-import com.example.allthatbooks.domain.common.enums.Tag;
+import com.example.allthatbooks.common.enums.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

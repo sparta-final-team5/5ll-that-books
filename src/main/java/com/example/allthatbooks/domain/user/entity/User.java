@@ -1,6 +1,6 @@
 package com.example.allthatbooks.domain.user.entity;
 
-import com.example.allthatbooks.domain.common.entity.Timestamped;
+import com.example.allthatbooks.common.entity.Timestamped;
 import com.example.allthatbooks.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;

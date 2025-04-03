@@ -1,6 +1,6 @@
 package com.example.allthatbooks.domain.review.entity;
 
-import com.example.allthatbooks.domain.common.entity.Timestamped;
+import com.example.allthatbooks.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -3,14 +3,12 @@ package com.example.allthatbooks.domain.book.dto.response;
 import com.example.allthatbooks.domain.book.entity.Book;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 @Getter
-public class BookSingleResponse {
+public class BookListResponse {
 
     private final Long bookId;
 
@@ -30,24 +28,12 @@ public class BookSingleResponse {
 
     private final List<BookTagResponse> tags;
 
-    private final List<BookDetailResponse> images;
-
     private final LocalDateTime createdAt;
 
     private final LocalDateTime updatedAt;
 
-    public static BookSingleResponse toDto(Book book) {
-        List<BookTagResponse> tagResponse = book.getBookTagSet()
-            .stream()
-            .map(BookTagResponse::toDto)
-            .toList();
-
-        List<BookDetailResponse> detailResponse = book.getBookDetailList()
-            .stream()
-            .map(BookDetailResponse::toDto)
-            .toList();
-
-        return BookSingleResponse.builder()
+    public static BookListResponse toDto(Book book, List<BookTagResponse> tagResponses) {
+        return BookListResponse.builder()
             .bookId(book.getId())
             .title(book.getTitle())
             .author(book.getAuthor())
@@ -56,15 +42,14 @@ public class BookSingleResponse {
             .price(book.getPrice())
             .info(book.getInfo())
             .thumbnailUrl(book.getThumbnailUrl())
-            .tags(tagResponse)
-            .images(detailResponse)
+            .tags(tagResponses)
             .createdAt(book.getCreatedAt())
             .updatedAt(book.getUpdatedAt())
             .build();
     }
 
     @Builder
-    private BookSingleResponse(
+    private BookListResponse(
         Long bookId,
         String title,
         String author,
@@ -74,7 +59,6 @@ public class BookSingleResponse {
         String info,
         String thumbnailUrl,
         List<BookTagResponse> tags,
-        List<BookDetailResponse> images,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
     ) {
@@ -87,7 +71,6 @@ public class BookSingleResponse {
         this.info = info;
         this.thumbnailUrl = thumbnailUrl;
         this.tags = tags;
-        this.images = images;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

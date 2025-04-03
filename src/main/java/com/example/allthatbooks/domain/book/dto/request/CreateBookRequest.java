@@ -1,7 +1,7 @@
 package com.example.allthatbooks.domain.book.dto.request;
 
-import com.example.allthatbooks.domain.common.enums.Tag;
-import com.example.allthatbooks.domain.common.dto.ImageUrl;
+import com.example.allthatbooks.common.enums.Tag;
+import com.example.allthatbooks.common.dto.ImageUrl;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
