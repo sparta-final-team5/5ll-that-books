@@ -3,6 +3,7 @@ package com.example.allthatbooks.domain.book.entity;
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
 import com.example.allthatbooks.domain.common.entity.Timestamped;
+import com.example.allthatbooks.domain.common.enums.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -40,7 +43,16 @@ public class Book extends Timestamped {
     @Column(nullable = false, columnDefinition = "text")
     private String info;
 
+    @Column(nullable = false)
     private String thumbnailUrl;
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "book_id")
+    private List<BookTag> bookTagList = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "book_id")
+    private List<BookDetail> bookDetailList = new ArrayList<>();
 
     private LocalDateTime deletedAt;
 
@@ -54,6 +66,14 @@ public class Book extends Timestamped {
             .info(request.getInfo())
             .thumbnailUrl(request.getThumbnailUrl())
             .build();
+    }
+
+    public void addTag(BookTag bookTag) {
+        this.bookTagList.add(bookTag);
+    }
+
+    public void addDetail(BookDetail bookDetail) {
+        this.bookDetailList.add(bookDetail);
     }
 
     public void updateBook(UpdateBookRequest request) {
