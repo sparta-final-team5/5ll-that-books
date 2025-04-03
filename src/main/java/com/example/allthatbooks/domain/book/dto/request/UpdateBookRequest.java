@@ -36,9 +36,9 @@ public class UpdateBookRequest {
     private String thumbnailUrl;
 
     @Size(min = 1, max = 10, message = "태그 갯수는 최소 1개 이상, 최대 10개 이하만 가능합니다.")
-    private List<Tag> tags;
+    private List<BookTagRequest> tags;
 
     @Size(max = 10, message = "이미지는 최대 10장까지 등록 가능합니다.")
-    private List<ImageUrl> images = new ArrayList<>();
+    private List<BookDetailRequest> images = new ArrayList<>();
 
 }

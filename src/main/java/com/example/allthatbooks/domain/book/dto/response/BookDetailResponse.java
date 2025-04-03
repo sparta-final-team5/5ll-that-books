@@ -7,16 +7,20 @@ import lombok.Getter;
 @Getter
 public class BookDetailResponse {
 
-    private String imageUrl;
+    private final Long id;
+    private final String imageUrl;
 
     public static BookDetailResponse toDto(BookDetail bookDetail) {
         return BookDetailResponse.builder()
+            .id(bookDetail.getId())
             .imageUrl(bookDetail.getImageUrl())
             .build();
     }
 
     @Builder
-    private BookDetailResponse(String imageUrl) {
+    private BookDetailResponse(Long id, String imageUrl) {
+        this.id = id;
         this.imageUrl = imageUrl;
     }
+
 }

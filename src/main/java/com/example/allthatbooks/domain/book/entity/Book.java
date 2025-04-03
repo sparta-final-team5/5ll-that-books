@@ -1,15 +1,16 @@
 package com.example.allthatbooks.domain.book.entity;
 
+import com.example.allthatbooks.common.entity.Timestamped;
+import com.example.allthatbooks.domain.book.dto.request.BookDetailRequest;
+import com.example.allthatbooks.domain.book.dto.request.BookTagRequest;
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
-import com.example.allthatbooks.common.dto.ImageUrl;
-import com.example.allthatbooks.common.entity.Timestamped;
-import com.example.allthatbooks.common.enums.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,12 +50,14 @@ public class Book extends Timestamped {
     @Column(nullable = false)
     private String thumbnailUrl;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id")
+    @BatchSize(size = 100)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "book_id", nullable = false)
     private Set<BookTag> bookTagSet = new HashSet<>();
 
+    @BatchSize(size = 100)
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private List<BookDetail> bookDetailList = new ArrayList<>();
 
     private LocalDateTime deletedAt;
@@ -71,14 +74,6 @@ public class Book extends Timestamped {
             .build();
     }
 
-    public void addTag(BookTag bookTag) {
-        this.bookTagSet.add(bookTag);
-    }
-
-    public void addDetail(BookDetail bookDetail) {
-        this.bookDetailList.add(bookDetail);
-    }
-
     public void updateBook(UpdateBookRequest request) {
         this.title = request.getTitle();
         this.author = request.getAuthor();
@@ -88,17 +83,42 @@ public class Book extends Timestamped {
         this.info = request.getInfo();
         this.thumbnailUrl = request.getThumbnailUrl();
 
-        Set<BookTag> newTagSet = new HashSet<>();
-        for (Tag tag : request.getTags()) {
-            newTagSet.add(BookTag.createBookTag(tag));
+        this.bookTagSet.clear();
+        for (BookTagRequest tag : request.getTags()) {
+            BookTag bookTag = tag.getId() != null
+                ? BookTag.updateBookTag(tag.getId(), tag.getTag())
+                : BookTag.createBookTag(tag.getTag());
+            this.bookTagSet.add(bookTag);
         }
-        this.bookTagSet = new HashSet<>(newTagSet);
 
-        List<BookDetail> newDetailList = new ArrayList<>();
-        for (ImageUrl image : request.getImages()) {
-            newDetailList.add(BookDetail.createBookDetail(image.getImageUrl()));
+        List<BookDetail> updatedDetails = new ArrayList<>();
+        for (BookDetailRequest image : request.getImages()) {
+            BookDetail bookDetail = image.getId() != null
+                ? BookDetail.updateBookDetail(image.getId(), image.getImageUrl())
+                : BookDetail.createBookDetail(image.getImageUrl());
+            updatedDetails.add(bookDetail);
         }
-        this.bookDetailList = new ArrayList<>(newDetailList);
+
+        this.bookDetailList.forEach(existing -> {
+            if (request.getImages().stream().noneMatch(req -> req.getId() != null
+                && req.getId().equals(existing.getId()))) {
+                existing.deleteBookDetail();
+            }
+        });
+
+        updatedDetails.forEach(detail -> {
+            if (!this.bookDetailList.contains(detail)) {
+                this.bookDetailList.add(detail);
+            }
+        });
+    }
+
+    public void addTag(BookTag bookTag) {
+        this.bookTagSet.add(bookTag);
+    }
+
+    public void addDetail(BookDetail bookDetail) {
+        this.bookDetailList.add(bookDetail);
     }
 
     public void deleteBook() {

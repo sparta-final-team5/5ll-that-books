@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
             .findFirst()
             .map(DefaultMessageSourceResolvable::getDefaultMessage)
             .orElseThrow(() -> new IllegalStateException("검증 에러가 반드시 존재해야 합니다."));
-        return getErrorResponse(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_BOOK.getMessage());
+        return getErrorResponse(HttpStatus.NOT_FOUND, firstErrorMessage);
     }
 
     @ExceptionHandler(Exception.class)

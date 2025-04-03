@@ -12,14 +12,6 @@ import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book,Long>, BookRepositoryQueryDsl {
 
-    @Query("select distinct b from Book b left join fetch b.bookTagSet left join fetch b.bookDetailList where b.id = :bookId")
-    Optional<Book> findBookByIdFetchJoin(@Param("bookId") Long bookId);
-
-    default Book findBookByIdFetchJoinOrElseThrow(Long bookId) {
-        return findBookByIdFetchJoin(bookId)
-            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
-    }
-
     Optional<Book> findBookById(Long bookId);
 
     default Book findBookByIdOrElseThrow(Long bookId) {

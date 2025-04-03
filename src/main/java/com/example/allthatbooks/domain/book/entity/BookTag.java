@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
@@ -17,8 +15,8 @@ public class BookTag {
 
     @Id
     @Column(name = "book_tag_id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Tag tagName;
@@ -29,8 +27,16 @@ public class BookTag {
             .build();
     }
 
+    public static BookTag updateBookTag(Long id, Tag tagName) {
+        return BookTag.builder()
+            .id(id)
+            .tagName(tagName)
+            .build();
+    }
+
     @Builder
-    private BookTag(Tag tagName) {
+    private BookTag(Long id, Tag tagName) {
+        this.id = id;
         this.tagName = tagName;
     }
 

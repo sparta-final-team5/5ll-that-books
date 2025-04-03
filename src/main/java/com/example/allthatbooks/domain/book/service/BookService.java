@@ -5,6 +5,7 @@ import com.example.allthatbooks.common.dto.response.PageResponse;
 import com.example.allthatbooks.common.enums.Tag;
 import com.example.allthatbooks.common.exception.CustomException;
 import com.example.allthatbooks.common.exception.ErrorCode;
+import com.example.allthatbooks.domain.book.dto.request.BookTagRequest;
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
 import com.example.allthatbooks.domain.book.dto.response.BookListResponse;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -58,7 +61,7 @@ public class BookService {
     }
 
     public BookSingleResponse findOne(Long bookId) {
-        Book foundBook = bookRepository.findBookByIdFetchJoinOrElseThrow(bookId);
+        Book foundBook = bookRepository.findBookByIdOrElseThrow(bookId);
 
         if (foundBook.getDeletedAt() != null) {
             throw new CustomException(ErrorCode.ALREADY_DELETED_BOOK);
@@ -70,15 +73,14 @@ public class BookService {
     @Transactional
     public void updateBook(Long bookId, UpdateBookRequest request) {
         //TODO: userId 검증 로직 필요
-
-        // fetch Join 적용
-        Book foundBook = bookRepository.findBookByIdFetchJoinOrElseThrow(bookId);
+        Book foundBook = bookRepository.findBookByIdOrElseThrow(bookId);
 
         if (foundBook.getDeletedAt() != null) {
             throw new CustomException(ErrorCode.ALREADY_DELETED_BOOK);
         }
 
         foundBook.updateBook(request);
+        bookRepository.save(foundBook);
     }
 
     @Transactional
