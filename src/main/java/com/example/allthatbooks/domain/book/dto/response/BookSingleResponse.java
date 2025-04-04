@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public class BookSingleResponse {
 
-    private final Long bookId;
+    private final Long id;
 
     private final String title;
 
@@ -48,7 +48,7 @@ public class BookSingleResponse {
             .toList();
 
         return BookSingleResponse.builder()
-            .bookId(book.getId())
+            .id(book.getId())
             .title(book.getTitle())
             .author(book.getAuthor())
             .translator(book.getTranslator())
@@ -65,7 +65,7 @@ public class BookSingleResponse {
 
     @Builder
     private BookSingleResponse(
-        Long bookId,
+        Long id,
         String title,
         String author,
         String translator,
@@ -78,7 +78,7 @@ public class BookSingleResponse {
         LocalDateTime createdAt,
         LocalDateTime updatedAt
     ) {
-        this.bookId = bookId;
+        this.id = id;
         this.title = title;
         this.author = author;
         this.translator = translator;

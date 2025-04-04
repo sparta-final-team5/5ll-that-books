@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class BookListResponse {
 
-    private final Long bookId;
+    private final Long id;
 
     private final String title;
 
@@ -34,7 +34,7 @@ public class BookListResponse {
 
     public static BookListResponse toDto(Book book, List<BookTagResponse> tagResponses) {
         return BookListResponse.builder()
-            .bookId(book.getId())
+            .id(book.getId())
             .title(book.getTitle())
             .author(book.getAuthor())
             .translator(book.getTranslator())
@@ -50,7 +50,7 @@ public class BookListResponse {
 
     @Builder
     private BookListResponse(
-        Long bookId,
+        Long id,
         String title,
         String author,
         String translator,
@@ -62,7 +62,7 @@ public class BookListResponse {
         LocalDateTime createdAt,
         LocalDateTime updatedAt
     ) {
-        this.bookId = bookId;
+        this.id = id;
         this.title = title;
         this.author = author;
         this.translator = translator;
