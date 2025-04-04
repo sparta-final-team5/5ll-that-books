@@ -83,6 +83,7 @@ public class BookService {
 
     @Transactional
     public void updateTags(Long bookId, UpdateTagRequest request) {
+        //TODO: userId 검증 로직 필요
         Book foundBook = bookRepository.findBookByIdWithTagsOrElseThrow(bookId);
 
         if (foundBook.getDeletedAt() != null) {
@@ -94,6 +95,7 @@ public class BookService {
 
     @Transactional
     public void updateDetailImages(Long bookId, UpdateDetailImageRequest request) {
+        //TODO: userId 검증 로직 필요
         Book foundBook = bookRepository.findBookByIdWithDetailImagesOrElseThrow(bookId);
 
         if (foundBook.getDeletedAt() != null) {
@@ -105,6 +107,7 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long bookId) {
+        //TODO: userId 검증 로직 필요
         Book foundBook = bookRepository.findBookByIdOrElseThrow(bookId);
 
         if (foundBook.getDeletedAt() != null) {
