@@ -21,23 +21,26 @@ public class BookTag {
     @Enumerated(EnumType.STRING)
     private Tag tagName;
 
-    public static BookTag createBookTag(Tag tagName) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+
+    public static BookTag createBookTag(Tag tagName, Book book) {
         return BookTag.builder()
             .tagName(tagName)
+            .book(book)
             .build();
     }
 
-    public static BookTag updateBookTag(Long id, Tag tagName) {
-        return BookTag.builder()
-            .id(id)
-            .tagName(tagName)
-            .build();
+    public void updateTag(Tag tagName) {
+        this.tagName = tagName;
     }
 
     @Builder
-    private BookTag(Long id, Tag tagName) {
+    private BookTag(Long id, Tag tagName, Book book) {
         this.id = id;
         this.tagName = tagName;
+        this.book = book;
     }
 
 }

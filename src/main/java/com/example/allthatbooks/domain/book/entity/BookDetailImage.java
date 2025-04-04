@@ -12,41 +12,43 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "book_detail")
-public class BookDetail extends Timestamped {
+@Table(name = "book_detail_images")
+public class BookDetailImage extends Timestamped {
 
     @Id
-    @Column(name = "book_detail_id")
+    @Column(name = "book_detail_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String imageUrl;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+
     private LocalDateTime deletedAt;
 
-    public static BookDetail createBookDetail(String imageUrl) {
-        return BookDetail.builder()
+    public static BookDetailImage createBookDetail(String imageUrl, Book book) {
+        return BookDetailImage.builder()
             .imageUrl(imageUrl)
+            .book(book)
             .build();
     }
 
-    public static BookDetail updateBookDetail(Long id, String imageUrl) {
-        return BookDetail.builder()
-            .id(id)
-            .imageUrl(imageUrl)
-            .build();
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public void deleteBookDetail() {
+    public void deleteBookDetailImage() {
         this.deletedAt = LocalDateTime.now();
     }
 
     @Builder
-    private BookDetail(Long id, String imageUrl, LocalDateTime deletedAt) {
+    private BookDetailImage(Long id, String imageUrl, Book book, LocalDateTime deletedAt) {
         this.id = id;
         this.imageUrl = imageUrl;
+        this.book = book;
         this.deletedAt = deletedAt;
     }
-
 }

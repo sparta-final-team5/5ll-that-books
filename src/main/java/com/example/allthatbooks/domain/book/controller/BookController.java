@@ -3,8 +3,11 @@ package com.example.allthatbooks.domain.book.controller;
 import com.example.allthatbooks.common.dto.response.PageResponse;
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
+import com.example.allthatbooks.domain.book.dto.request.UpdateDetailImageRequest;
+import com.example.allthatbooks.domain.book.dto.request.UpdateTagRequest;
 import com.example.allthatbooks.domain.book.dto.response.BookListResponse;
 import com.example.allthatbooks.domain.book.dto.response.BookSingleResponse;
+import com.example.allthatbooks.domain.book.dto.response.BookTagResponse;
 import com.example.allthatbooks.domain.book.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +54,26 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{bookId}/tags")
+    public ResponseEntity<Void> updateTags(
+        @PathVariable("bookId") Long bookId,
+        @Valid @RequestBody UpdateTagRequest request
+    ) {
+        bookService.updateTags(bookId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{bookId}/images")
+    public ResponseEntity<Void> updateDetailImages(
+        @PathVariable("bookId") Long bookId,
+        @Valid @RequestBody UpdateDetailImageRequest request
+    ) {
+        bookService.updateDetailImages(bookId, request);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<Void> deleteBook(@PathVariable("bookId") Long bookId    ) {
+    public ResponseEntity<Void> deleteBook(@PathVariable("bookId") Long bookId) {
         bookService.deleteBook(bookId);
         return ResponseEntity.ok().build();
     }

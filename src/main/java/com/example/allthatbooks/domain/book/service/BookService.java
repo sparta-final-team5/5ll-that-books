@@ -5,13 +5,15 @@ import com.example.allthatbooks.common.dto.response.PageResponse;
 import com.example.allthatbooks.common.enums.Tag;
 import com.example.allthatbooks.common.exception.CustomException;
 import com.example.allthatbooks.common.exception.ErrorCode;
-import com.example.allthatbooks.domain.book.dto.request.BookTagRequest;
 import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
 import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
+import com.example.allthatbooks.domain.book.dto.request.UpdateDetailImageRequest;
+import com.example.allthatbooks.domain.book.dto.request.UpdateTagRequest;
 import com.example.allthatbooks.domain.book.dto.response.BookListResponse;
 import com.example.allthatbooks.domain.book.dto.response.BookSingleResponse;
+import com.example.allthatbooks.domain.book.dto.response.BookTagResponse;
 import com.example.allthatbooks.domain.book.entity.Book;
-import com.example.allthatbooks.domain.book.entity.BookDetail;
+import com.example.allthatbooks.domain.book.entity.BookDetailImage;
 import com.example.allthatbooks.domain.book.entity.BookTag;
 import com.example.allthatbooks.domain.book.repository.BookDetailRepository;
 import com.example.allthatbooks.domain.book.repository.BookRepository;
@@ -23,8 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -41,13 +41,13 @@ public class BookService {
         Book book = Book.createBook(request);
 
         for (Tag tag : request.getTags()) {
-            BookTag bookTag = BookTag.createBookTag(tag);
+            BookTag bookTag = BookTag.createBookTag(tag, book);
             book.addTag(bookTag);
         }
 
         for (ImageUrl image : request.getImages()) {
-            BookDetail bookDetail = BookDetail.createBookDetail(image.getImageUrl());
-            book.addDetail(bookDetail);
+            BookDetailImage bookDetailImage = BookDetailImage.createBookDetail(image.getImageUrl(), book);
+            book.addDetail(bookDetailImage);
         }
 
         Book savedBook = bookRepository.save(book);
@@ -79,18 +79,39 @@ public class BookService {
             throw new CustomException(ErrorCode.ALREADY_DELETED_BOOK);
         }
 
-        foundBook.updateBook(request);
-        bookRepository.save(foundBook);
+        foundBook.updateBasicInfo(request);
+    }
+
+    @Transactional
+    public void updateTags(Long bookId, UpdateTagRequest request) {
+        Book foundBook = bookRepository.findBookByIdWithTagsOrElseThrow(bookId);
+
+        if (foundBook.getDeletedAt() != null) {
+            throw new CustomException(ErrorCode.ALREADY_DELETED_BOOK);
+        }
+
+        foundBook.updateTags(request);
+    }
+
+    @Transactional
+    public void updateDetailImages(Long bookId, UpdateDetailImageRequest request) {
+        Book foundBook = bookRepository.findBookByIdWithDetailImagesOrElseThrow(bookId);
+
+        if (foundBook.getDeletedAt() != null) {
+            throw new CustomException(ErrorCode.ALREADY_DELETED_BOOK);
+        }
+
+        foundBook.updateDetailImages(request);
     }
 
     @Transactional
     public void deleteBook(Long bookId) {
         Book foundBook = bookRepository.findBookByIdOrElseThrow(bookId);
+
         if (foundBook.getDeletedAt() != null) {
             throw new CustomException(ErrorCode.ALREADY_DELETED_BOOK);
         }
 
         foundBook.deleteBook();
     }
-
 }

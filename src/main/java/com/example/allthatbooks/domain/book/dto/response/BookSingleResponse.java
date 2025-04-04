@@ -30,7 +30,7 @@ public class BookSingleResponse {
 
     private final List<BookTagResponse> tags;
 
-    private final List<BookDetailResponse> images;
+    private final List<BookDetailImageResponse> images;
 
     private final LocalDateTime createdAt;
 
@@ -42,9 +42,9 @@ public class BookSingleResponse {
             .map(BookTagResponse::toDto)
             .toList();
 
-        List<BookDetailResponse> detailResponse = book.getBookDetailList()
+        List<BookDetailImageResponse> detailResponse = book.getBookDetailImageList()
             .stream()
-            .map(BookDetailResponse::toDto)
+            .map(BookDetailImageResponse::toDto)
             .toList();
 
         return BookSingleResponse.builder()
@@ -74,7 +74,7 @@ public class BookSingleResponse {
         String info,
         String thumbnailUrl,
         List<BookTagResponse> tags,
-        List<BookDetailResponse> images,
+        List<BookDetailImageResponse> images,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
     ) {

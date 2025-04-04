@@ -1,10 +1,7 @@
 package com.example.allthatbooks.domain.book.entity;
 
 import com.example.allthatbooks.common.entity.Timestamped;
-import com.example.allthatbooks.domain.book.dto.request.BookDetailRequest;
-import com.example.allthatbooks.domain.book.dto.request.BookTagRequest;
-import com.example.allthatbooks.domain.book.dto.request.CreateBookRequest;
-import com.example.allthatbooks.domain.book.dto.request.UpdateBookRequest;
+import com.example.allthatbooks.domain.book.dto.request.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -51,14 +49,12 @@ public class Book extends Timestamped {
     private String thumbnailUrl;
 
     @BatchSize(size = 100)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "book_id", nullable = false)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private Set<BookTag> bookTagSet = new HashSet<>();
 
     @BatchSize(size = 100)
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id", nullable = false)
-    private List<BookDetail> bookDetailList = new ArrayList<>();
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<BookDetailImage> bookDetailImageList = new ArrayList<>();
 
     private LocalDateTime deletedAt;
 
@@ -74,7 +70,7 @@ public class Book extends Timestamped {
             .build();
     }
 
-    public void updateBook(UpdateBookRequest request) {
+    public void updateBasicInfo(UpdateBookRequest request) {
         this.title = request.getTitle();
         this.author = request.getAuthor();
         this.translator = request.getTranslator();
@@ -82,47 +78,72 @@ public class Book extends Timestamped {
         this.price = request.getPrice();
         this.info = request.getInfo();
         this.thumbnailUrl = request.getThumbnailUrl();
+    }
 
-        this.bookTagSet.clear();
+    public void updateTags(UpdateTagRequest request) {
+        Set<Long> requestTagIds = request.getTags().stream()
+            .filter(tag -> tag.getId() != null)
+            .map(BookTagRequest::getId)
+            .collect(Collectors.toSet());
+
+        // 현재 Hard Delete 정책이어서 요청에 없는 태그는 DB에서 제거됨
+        bookTagSet.removeIf(tag -> !requestTagIds.contains(tag.getId()));
+
+        // 추가 및 업데이트
         for (BookTagRequest tag : request.getTags()) {
-            BookTag bookTag = tag.getId() != null
-                ? BookTag.updateBookTag(tag.getId(), tag.getTag())
-                : BookTag.createBookTag(tag.getTag());
-            this.bookTagSet.add(bookTag);
+            if (tag.getId() != null) {
+                bookTagSet.stream()
+                    .filter(t -> t.getId().equals(tag.getId()))
+                    .findFirst()
+                    .ifPresent(t -> t.updateTag(tag.getTag()));
+            } else {
+                BookTag newTag = BookTag.createBookTag(tag.getTag(), this);
+                bookTagSet.add(newTag);
+            }
         }
+    }
 
-        List<BookDetail> updatedDetails = new ArrayList<>();
-        for (BookDetailRequest image : request.getImages()) {
-            BookDetail bookDetail = image.getId() != null
-                ? BookDetail.updateBookDetail(image.getId(), image.getImageUrl())
-                : BookDetail.createBookDetail(image.getImageUrl());
-            updatedDetails.add(bookDetail);
-        }
+    public void updateDetailImages(UpdateDetailImageRequest request) {
+        Set<Long> requestImageIds = request.getImages().stream()
+            .filter(img -> img.getId() != null)
+            .map(BookDetailImageRequest::getId)
+            .collect(Collectors.toSet());
 
-        this.bookDetailList.forEach(existing -> {
-            if (request.getImages().stream().noneMatch(req -> req.getId() != null
-                && req.getId().equals(existing.getId()))) {
-                existing.deleteBookDetail();
+        // 요청에 없는 이미지 -> Soft Delete 처리
+        bookDetailImageList.forEach(image -> {
+            if (!requestImageIds.contains(image.getId()) && image.getDeletedAt() == null) {
+                image.deleteBookDetailImage();
             }
         });
 
-        updatedDetails.forEach(detail -> {
-            if (!this.bookDetailList.contains(detail)) {
-                this.bookDetailList.add(detail);
+        // 추가 및 업데이트
+        for (BookDetailImageRequest img : request.getImages()) {
+            if (img.getId() != null) {
+                bookDetailImageList.stream()
+                    .filter(dImg -> dImg.getId().equals(img.getId()))
+                    .findFirst()
+                    .ifPresent(dImg -> dImg.updateImageUrl(img.getImageUrl()));
+            } else {
+                BookDetailImage newImage = BookDetailImage.createBookDetail(img.getImageUrl(), this);
+                bookDetailImageList.add(newImage);
             }
-        });
+        }
     }
 
     public void addTag(BookTag bookTag) {
         this.bookTagSet.add(bookTag);
     }
 
-    public void addDetail(BookDetail bookDetail) {
-        this.bookDetailList.add(bookDetail);
+    public void addDetail(BookDetailImage bookDetailImage) {
+        this.bookDetailImageList.add(bookDetailImage);
     }
 
     public void deleteBook() {
         this.deletedAt = LocalDateTime.now();
+
+        for (BookDetailImage bookDetailImage : bookDetailImageList) {
+            bookDetailImage.deleteBookDetailImage();
+        }
     }
 
     @Builder

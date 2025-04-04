@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class BookDetailRequest {
+public class BookDetailImageRequest {
 
     private Long id;
     private String imageUrl;
