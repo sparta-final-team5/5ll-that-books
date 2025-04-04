@@ -36,6 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-application-db.properties
-application-local.properties
-application-local.yml
+### resources 하위 파일들 모두 ignore, application.properties만 예외 ###
+src/main/resources/**
+!application.properties
