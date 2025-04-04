@@ -1,4 +1,4 @@
-package com.example.allthatbooks.domain.common.exception;
+package com.example.allthatbooks.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,17 +8,19 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Getter
 public class CustomExceptionResponse {
+
     private final LocalDateTime occurDateTime;
     private final HttpStatus statusCode;
     private final int status;
     private final String message;
 
-    public static CustomExceptionResponse toResponse(ErrorCode errorCode) {
+    public static CustomExceptionResponse toResponse(HttpStatus status, String message) {
         return new CustomExceptionResponse(
-                LocalDateTime.now(),
-                errorCode.getStatus(),
-                errorCode.getStatus().value(),
-                errorCode.getMessage()
+            LocalDateTime.now(),
+            status,
+            status.value(),
+            message
         );
     }
+
 }

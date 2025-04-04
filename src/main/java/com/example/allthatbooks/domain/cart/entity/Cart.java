@@ -1,7 +1,7 @@
 package com.example.allthatbooks.domain.cart.entity;
 
 import com.example.allthatbooks.domain.book.entity.Book;
-import com.example.allthatbooks.domain.common.entity.Timestamped;
+import com.example.allthatbooks.common.entity.Timestamped;
 import com.example.allthatbooks.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,4 +27,5 @@ public class Cart extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 }

@@ -1,4 +1,4 @@
-package com.example.allthatbooks.domain.common.entity;
+package com.example.allthatbooks.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

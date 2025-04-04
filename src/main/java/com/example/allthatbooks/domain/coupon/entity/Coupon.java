@@ -1,6 +1,6 @@
 package com.example.allthatbooks.domain.coupon.entity;
 
-import com.example.allthatbooks.domain.common.entity.Timestamped;
+import com.example.allthatbooks.common.entity.Timestamped;
 import com.example.allthatbooks.domain.coupon.enums.DiscountType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Entity
@@ -40,6 +39,6 @@ public class Coupon extends Timestamped {
     @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Column(nullable = false)
     private LocalDateTime deletedAt;
+
 }
