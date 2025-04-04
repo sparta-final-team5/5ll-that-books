@@ -11,7 +11,6 @@ import com.example.allthatbooks.domain.book.dto.request.UpdateDetailImageRequest
 import com.example.allthatbooks.domain.book.dto.request.UpdateTagRequest;
 import com.example.allthatbooks.domain.book.dto.response.BookListResponse;
 import com.example.allthatbooks.domain.book.dto.response.BookSingleResponse;
-import com.example.allthatbooks.domain.book.dto.response.BookTagResponse;
 import com.example.allthatbooks.domain.book.entity.Book;
 import com.example.allthatbooks.domain.book.entity.BookDetailImage;
 import com.example.allthatbooks.domain.book.entity.BookTag;

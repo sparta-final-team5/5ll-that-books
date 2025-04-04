@@ -1,15 +1,9 @@
 package com.example.allthatbooks.domain.book.dto.request;
 
-import com.example.allthatbooks.common.dto.ImageUrl;
-import com.example.allthatbooks.common.enums.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @Getter

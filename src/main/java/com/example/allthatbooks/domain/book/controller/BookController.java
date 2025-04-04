@@ -7,15 +7,11 @@ import com.example.allthatbooks.domain.book.dto.request.UpdateDetailImageRequest
 import com.example.allthatbooks.domain.book.dto.request.UpdateTagRequest;
 import com.example.allthatbooks.domain.book.dto.response.BookListResponse;
 import com.example.allthatbooks.domain.book.dto.response.BookSingleResponse;
-import com.example.allthatbooks.domain.book.dto.response.BookTagResponse;
 import com.example.allthatbooks.domain.book.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/books")
